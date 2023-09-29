@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title>n-queens</title>
+   <script type="text/javascript">
+    var ChessBoard = function (domElement, sizeN) {
+      this.domElement = domElement;
+  
+      this.clear(sizeN);
+    };
+  
+    ChessBoard.prototype.clear = function(n) {
+      n = (n || this.getN());
+      var board = [];
+
+      for (var i = 0; i < n; i++) {
+        var row = [];
+        for (var j = 0; j < n; j++) {
+          row.push(0);
+        }
+        board.push(row);
+      }
+
+      this.arrChessBoard = board;
+    };
+    ChessBoard.prototype.redraw = function () {
+      var board = this.arrChessBoard;
+      var el = this.domElement;
+      var n = this.getN();
+
+      el.innerHTML = "";
+
+      for (var i = 0; i < n; i++) {
+        var domRow = document.createElement("tr");
+
+        for (var j = 0; j < n; j++) {
+          var domCol = document.createElement("td");
+          domCol.innerHTML = board[i][j] ? 'Q' : '&nbsp;0';
+          domRow.appendChild(domCol);
+        }
+
+        el.appendChild(domRow);
+      }
+    };
+    ChessBoard.prototype.getN = function () {
+      return this.arrChessBoard.length
+    }
+    ChessBoard.prototype.getBoard = function () {
+      return this.arrChessBoard;
+    }
+  
+    function initDom(n) {
+      var chessboard = new ChessBoard(document.getElementById("chess-board"), n);
+
+      return chessboard;
+    }
+  </script>
+</head>
+<body>
+  <table id="chess-board" style="margin-top: 20px;margin-left: 100px;">
+    <h1 style="margin-left: 525px; font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;text-decoration: underline;">N-Queen problem</h1>
+    <!-- <h4>Please Enter A Value Between 4 And 20</h4> -->
+    <div>
+      <label style="font-weight: bold;" for="n-input">Enter value for Number of Queens:</label>
+      <input type="number" id="n-input" min="4" max="20">
+      <button onclick="updateChessBoard()">Generate Chessboard</button>
+    </div>
+
+      
+  </table>
+  <table >
+    <h1 style="margin-left: 500px; font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;text-decoration: underline;">Developer Comments</h1>
+    <ul>
+       <li>Initialize a chessboard with the desired size `N`</li>
+       <li>Place initial queens randomly on the board using `placeInitialQueens(arrBoard)`.</li>
+       <li>Use the `findMostThreatenedQueen(arrBoard)` function to identify the most threatened queen.</li>
+       <li>Use `findLeastThreatenedColumn(arrBoard, q)` to find the least threatened column for the most threatened queen.</li>
+      <li>Repeat steps 3 and 4 until a valid solution is found or the algorithm converges.</li>
+      <li>**CHAT-GPT used to find "findLeastThreatenedColumn" AND "findNumberOfThreats" BUT THE INTUTION TO SOLVE THIS PROBLEM CAME TO ME AFTER READING SEVERAL ARTICLES**</li>
+    </ul>
+  </table>
+</body>
+
+<script type="text/javascript" src="n-queen.js"></script>
+<script type="text/javascript">
+  function updateChessBoard() {
+  var n = parseInt(document.getElementById("n-input").value, 10);
+  var cc = window.chessController = initDom(n);
+  
+  placeInitialQueens(cc.getBoard());
+  // var queen= findMostThreatenedQueen(cc.getBoard());
+  // console.log("queen",queen)
+
+  // cc.redraw();
+  flag=0;
+  itr=0;
+  while(flag==0){
+    var queen = findMostThreatenedQueen(cc.getBoard());
+      console.log("queen",queen)
+      if(queen==-1){
+        break;
+      }else{
+        
+
+    var newCol = findLeastThreatenedColumn(cc.getBoard(), queen);
+    console.log("new col",newCol)
+    if(itr==10){
+      // flag ++;
+      cc.clear();
+      placeInitialQueens(cc.getBoard());
+      itr=0;
+    }
+    itr++;
+
+    
+
+  }
+
+}
+cc.redraw();
+
+  }
+
+
+  /*
+  while true {
+    var queen = findMostThreatenedQueen(cc.getBoard());
+    if threats of queen == 0, we're done; break;
+  
+    var newCol = findLeastThreatenedColumn(cc.getBoard(), queen);
+    if not making progress {
+      cc.clear();
+      placeInitialQueens(cc.getBoard());
+    }
+    // move the queen on the board to col
+
+  } // we're done
+  cc.redraw();
+  */
+
+//  while(true){
+//     var queen= findMostThreatenedQueen(cc.getBoard());
+//  }
+</script>
+</html>
